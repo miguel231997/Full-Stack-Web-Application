@@ -1,2 +1,4 @@
-package learn.register.controller;public class AuthController {
+package learn.register.controller;
+
+public class AuthController {
 }
