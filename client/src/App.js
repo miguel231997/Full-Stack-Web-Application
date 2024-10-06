@@ -4,6 +4,7 @@ import Home from './components/Home/Home.Component';
 import Login from './components/Login/Login.Component';
 import Tasks from './components/Tasks/Tasks.Component';
 import './App.css';
+import Signup from './components/Signup/Signup.Component';
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
           <li>
             <Link to="/login"> Login </Link>
           </li>
+          <li>
+            <Link to="/register"> Sign Up </Link>
+          </li>
         </ul>
       </nav>
 
@@ -26,6 +30,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Signup />} />
       </Routes>
 
     </div>
