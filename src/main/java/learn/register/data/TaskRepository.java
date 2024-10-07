@@ -9,10 +9,10 @@ public interface TaskRepository {
 
     Task findById(Long taskId);
 
-    int createTask(Task task);
+    int save(Task task);
 
-    int updateTask(Task task);
+    int update(Task task);
 
-    int deleteTask(Long taskId);
+    int deleteById(Long taskId);
 
 }

@@ -29,27 +29,27 @@ public class TaskJdbcTemplateRepository implements TaskRepository {
     }
 
     @Override
-    public int createTask(Task task) {
+    public int save(Task task) {
         final String sql = "INSERT INTO tasks (title, description, status, user_id) VALUES (?, ?, ?, ?)";
         return jdbcTemplate.update(sql,
                 task.getTitle(),
                 task.getDescription(),
                 task.getStatus(),
-                task.getId());
+                task.getTaskId());
     }
 
     @Override
-    public int updateTask(Task task) {
+    public int update(Task task) {
         final String sql = "UPDATE tasks SET title = ?, description = ?, status = ? WHERE id = ?";
         return jdbcTemplate.update(sql,
                 task.getTitle(),
                 task.getDescription(),
                 task.getStatus(),
-                task.getId());
+                task.getTaskId());
     }
 
     @Override
-    public int deleteTask(Long taskId) {
+    public int deleteById(Long taskId) {
         final String sql = "DELETE FROM tasks WHERE id = ?";
         return jdbcTemplate.update(sql, taskId);
     }

@@ -10,11 +10,11 @@ public class Task {
 
     //getters and setters
 
-    public Long getId(){
+    public Long getTaskId(){
         return id;
     }
 
-    public void setId(Long id) {
+    public void setTaskId(Long id) {
         this.id = id;
     }
 

@@ -10,7 +10,7 @@ public class TaskMapper implements RowMapper<Task> {
     @Override
     public Task mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         Task task = new Task();
-        task.setId(resultSet.getLong("id"));
+        task.setTaskId(resultSet.getLong("id"));
         task.setTitle(resultSet.getString("title"));
         task.setDescription(resultSet.getString("description"));
         task.setStatus(resultSet.getString("status"));
