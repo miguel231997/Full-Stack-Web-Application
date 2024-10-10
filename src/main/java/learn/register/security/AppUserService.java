@@ -1,6 +1,6 @@
 package learn.register.security;
 
-import learn.register.data.AppUserRepository;
+import learn.register.data.UserRepository;
 import learn.register.models.AppUser;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,10 +13,10 @@ import java.util.List;
 
 @Service
 public class AppUserService implements UserDetailsService {
-    private final AppUserRepository repository;
+    private final UserRepository repository;
     private final PasswordEncoder encoder;
 
-    public AppUserService(AppUserRepository repository,
+    public AppUserService(UserRepository repository,
                           PasswordEncoder encoder) {
         this.repository = repository;
         this.encoder = encoder;
@@ -24,13 +24,13 @@ public class AppUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser appUser = repository.findByUsername(username);
+        AppUser user = repository.findByUsername(username);
 
-        if (appUser == null || !appUser.isEnabled()) {
+        if (user == null || !user.isEnabled()) {
             throw new UsernameNotFoundException(username + " not found");
         }
 
-        return appUser;
+        return user;
     }
 
 
@@ -49,7 +49,7 @@ public class AppUserService implements UserDetailsService {
         String prefixedRole = "ROLE_" + role.toUpperCase();
 
         // Creating a user with the provided role (e.g., ROLE_PROFESSOR, ROLE_STUDENT)
-        AppUser newUser = new AppUser(0, username, encodedPassword, true, List.of(prefixedRole));
+        AppUser newUser = new AppUser(0L, username, encodedPassword, true, List.of(prefixedRole));
 
         // Saving the user to the repository
         return repository.create(newUser);
