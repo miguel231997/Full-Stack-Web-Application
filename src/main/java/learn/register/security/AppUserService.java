@@ -22,6 +22,19 @@ public class AppUserService implements UserDetailsService {
         this.encoder = encoder;
     }
 
+    public List<AppUser> getAllUsers() {
+        return repository.findAll();
+    }
+
+    public boolean deleteUser(Long id) {
+        AppUser user = repository.findById(id);
+        if(user != null) {
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser user = repository.findByUsername(username);

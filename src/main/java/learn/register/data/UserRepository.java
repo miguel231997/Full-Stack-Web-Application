@@ -19,4 +19,10 @@ public interface UserRepository {
     void updateRoles(AppUser user);
 
     public List<String> getRolesByUsername(String username);
+
+    List<AppUser> findAll();
+
+    AppUser findById(Long AppUserId);
+
+    int deleteById(Long studentId);
 }

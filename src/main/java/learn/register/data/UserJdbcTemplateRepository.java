@@ -102,4 +102,22 @@ public class UserJdbcTemplateRepository implements UserRepository {
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getString("role_name"), username);
     }
+
+    @Override
+    public List<AppUser> findAll() {
+        final String sql = "SELECT id, username, enabled FROM users";
+        return jdbcTemplate.query(sql, new UserMapper(null));
+    }
+
+    @Override
+    public AppUser findById(Long AppUserId) {
+        final String sql = "SELECT * FROM users WHERE user_id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{AppUserId}, new UserMapper(null));
+    }
+
+    @Override
+    public int deleteById(Long AppUserId) {
+        final String sql = "DELETE FROM users WHERE user_id = ?";
+        return jdbcTemplate.update(sql, AppUserId);
+    }
 }
