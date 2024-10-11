@@ -6,6 +6,7 @@ import learn.register.domain.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,13 +23,13 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    // GET all Tasks for a user
+    // GET all tasks for the authenticated user
     @GetMapping
-    public Result<List<Task>> findAll(@PathVariable Long userId) {
-        return taskService.findAllTasks(userId);
+    public Result<List<Task>> findAll() {
+        return taskService.findAllTasks();
     }
 
-    // GET Task by ID
+    // GET Task by ID (only the task owner can access)
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long taskId) {
         Result<Task> result = taskService.findTaskById(taskId);
@@ -38,8 +39,7 @@ public class TaskController {
         return new ResponseEntity<>(result.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-
-    // POST - Add a new task
+    // POST - Add a new task (only the authenticated user can add)
     @PostMapping
     public ResponseEntity<?> addTask(@RequestBody Task task) {
         Result<Task> result = taskService.addTask(task);
@@ -49,8 +49,7 @@ public class TaskController {
         return new ResponseEntity<>(result.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
-    // PUT - Update an existing task
+    // PUT - Update an existing task (only task owner can update)
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTask(@PathVariable Long taskId, @RequestBody Task task) {
         Result<Task> result = taskService.updateTask(taskId, task);
@@ -60,8 +59,7 @@ public class TaskController {
         return new ResponseEntity<>(result.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
-    // DELETE - Remove a task by its id
+    // DELETE - Remove a task by its ID (only task owner can delete)
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Long taskId) {
         Result<Void> result = taskService.deleteTaskById(taskId);

@@ -17,6 +17,12 @@ public class TaskJdbcTemplateRepository implements TaskRepository {
     }
 
     @Override
+    public Task findByIdAndUserId(Long taskId, Long userId) {
+        final String sql = "SELECT * FROM tasks WHERE id = ? AND user_id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{taskId, userId}, new TaskMapper());
+    }
+
+    @Override
     public List<Task> findAllTasksByUserId(Long userId) {
         final String sql = "SELECT * FROM tasks WHERE user_id = ?";
         return jdbcTemplate.query(sql, new Object[]{userId}, new TaskMapper());
