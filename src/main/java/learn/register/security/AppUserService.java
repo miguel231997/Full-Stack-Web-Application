@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
 import java.util.List;
@@ -26,11 +27,18 @@ public class AppUserService implements UserDetailsService {
         return repository.findAll();
     }
 
+    @Transactional  // Ensures that the delete operation is handled as a single transaction
     public boolean deleteUser(Long id) {
         AppUser user = repository.findById(id);
-        if(user != null) {
-            repository.deleteById(id);
-            return true;
+        if (user != null) {
+            try {
+                repository.deleteById(id);
+                return true;
+            } catch (Exception e) {
+                // Log the exception (or re-throw it based on your error handling strategy)
+                System.out.println("Error occurred while deleting the user: " + e.getMessage());
+                return false;
+            }
         }
         return false;
     }
@@ -47,7 +55,7 @@ public class AppUserService implements UserDetailsService {
     }
 
 
-    public AppUser create(String username, String password, String role) {
+    public AppUser create(String username, String password, String email, String role) {
         validateUsername(username);
         validatePassword(password);
 
@@ -59,10 +67,10 @@ public class AppUserService implements UserDetailsService {
         String encodedPassword = encoder.encode(password);
 
         // Prefix role with "ROLE_"
-        String prefixedRole = "ROLE_" + role.toUpperCase();
+        List<String> roles = List.of(role);
 
         // Creating a user with the provided role (e.g., ROLE_PROFESSOR, ROLE_STUDENT)
-        AppUser newUser = new AppUser(0L, username, encodedPassword, true, List.of(prefixedRole));
+        AppUser newUser = new AppUser(0L, username, encodedPassword, email, true, roles);
 
         // Saving the user to the repository
         return repository.create(newUser);
