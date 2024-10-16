@@ -41,7 +41,7 @@ public class TaskJdbcTemplateRepository implements TaskRepository {
                 task.getTitle(),
                 task.getDescription(),
                 task.getStatus(),
-                task.getTaskId());
+                task.getUserId());
     }
 
     @Override

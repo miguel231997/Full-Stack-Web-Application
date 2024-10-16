@@ -8,6 +8,9 @@ import java.util.List;
 public interface UserRepository {
 
     @Transactional
+    Long findUserIdByUsername(String username);
+
+    @Transactional
     AppUser findByUsername(String username);
 
     @Transactional

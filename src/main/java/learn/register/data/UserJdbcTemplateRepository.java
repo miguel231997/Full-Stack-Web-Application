@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,34 +23,40 @@ public class UserJdbcTemplateRepository implements UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public Long findUserIdByUsername(String username) {
+        final String sql = "SELECT id FROM users WHERE username = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{username}, Long.class);
+    }
+
     @Override
     @Transactional
     public AppUser findByUsername(String username) {
-        //retrive roles for the user
+        List<String> roles = getRolesByUsername(username); // Fetch roles
 
-        List<String> roles = getRolesByUsername(username);
+        // Ensure roles is never null
+        if (roles == null) {
+            roles = new ArrayList<>();
+        }
 
-        //Query the user details
-
-        final String sql = "SELECT id, username, password, enabled FROM users WHERE username = ?;";
+        final String sql = "SELECT id, username, password, email, enabled FROM users WHERE username = ?;";
         return jdbcTemplate.query(sql, new UserMapper(roles), username)
                 .stream()
                 .findFirst()
-                .orElse(null);
-    }
+                .orElse(null);    }
 
     @Override
     public AppUser create(AppUser user) {
 
         //insert user into the user table
-        final String sql = "INSERT INTO Users (username, password, enabled) VALUES (?, ?, ?)";
+        final String sql = "INSERT INTO users (username, password, email, enabled) VALUES (?, ?, ?, ?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsAffected = jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
-            ps.setBoolean(3, user.isEnabled());
+            ps.setString(3, user.getEmail());
+            ps.setBoolean(4, user.isEnabled());
             return ps;
         }, keyHolder);
 
@@ -105,19 +112,22 @@ public class UserJdbcTemplateRepository implements UserRepository {
 
     @Override
     public List<AppUser> findAll() {
-        final String sql = "SELECT id, username, enabled FROM users";
+        final String sql = "SELECT id, username, password, email, enabled FROM users";
         return jdbcTemplate.query(sql, new UserMapper(null));
     }
 
     @Override
     public AppUser findById(Long AppUserId) {
-        final String sql = "SELECT * FROM users WHERE user_id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{AppUserId}, new UserMapper(null));
+        final String sql = "SELECT * FROM users WHERE id = ?";
+
+        List<AppUser> users = jdbcTemplate.query(sql, new Object[]{AppUserId}, new UserMapper(null));
+
+        return users.isEmpty() ? null : users.get(0);
     }
 
     @Override
     public int deleteById(Long AppUserId) {
-        final String sql = "DELETE FROM users WHERE user_id = ?";
+        final String sql = "DELETE FROM users WHERE id = ?";
         return jdbcTemplate.update(sql, AppUserId);
     }
 }
