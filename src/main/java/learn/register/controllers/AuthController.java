@@ -76,18 +76,23 @@ public class AuthController {
         try {
             String username = credentials.get("username");
             String password = credentials.get("password");
+            String email = credentials.get("email");
             String extraCode = credentials.get("code"); // The code provided by the user
 
-            // Default role is STUDENT
-            String role = "ROLE_USER";
+            if (email == null || email.trim().isEmpty()) {
+                return new ResponseEntity<>("Email is required", HttpStatus.BAD_REQUEST);
+            }
+
+            // Default role is User
+            String role = "USER";
 
             // Check if the code matches the admin code
             if (adminCode.equals(extraCode)) {
-                role = "ROLE_ADMIN";
+                role = "ADMIN";
             }
 
             // Create the user with the specified role
-            AppUser appUser = appUserService.create(username, password, role);
+            AppUser appUser = appUserService.create(username, password, email, role);
 
             // Automatically authenticate the user after registration
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
@@ -106,7 +111,7 @@ public class AuthController {
         } catch (ValidationException ex) {
             return new ResponseEntity<>(List.of(ex.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (DuplicateKeyException ex) {
-            return new ResponseEntity<>(List.of("The provided username already exists"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(List.of("The provided username or email already exists"), HttpStatus.BAD_REQUEST);
         } catch (AuthenticationException ex) {
             return new ResponseEntity<>("Registration succeeded, but login failed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -121,9 +126,10 @@ public class AuthController {
         try {
             String username = credentials.get("username");
             String password = credentials.get("password");
+            String email = credentials.get("email");
 
             // Directly assign the ADMIN role
-            AppUser appUser = appUserService.create(username, password, "ADMIN");
+            AppUser appUser = appUserService.create(username, password, email, "ADMIN");
 
             // Return the appUserId after successful user creation
             HashMap<String, Long> map = new HashMap<>();

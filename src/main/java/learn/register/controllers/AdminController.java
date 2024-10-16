@@ -34,7 +34,7 @@ public class AdminController {
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         boolean success = appUserService.deleteUser(id);
         if(success) {
-            return ResponseEntity.ok("User deleted SuccessDully");
+            return ResponseEntity.ok("User deleted Successfully");
         } else {
             return ResponseEntity.status(404).body("User not found");
         }
