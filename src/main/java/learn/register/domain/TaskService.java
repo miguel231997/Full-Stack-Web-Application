@@ -1,5 +1,7 @@
 package learn.register.domain;
 
+import learn.register.data.UserRepository;
+import learn.register.models.AppUser;
 import learn.register.models.Task;
 import learn.register.data.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +15,12 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
         this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
     }
 
     // Fetch all tasks for the authenticated user
@@ -119,10 +123,23 @@ public class TaskService {
         return result;
     }
 
-    // Get the ID of the authenticated user
     private Long getAuthenticatedUserId() {
-        User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return Long.valueOf(authenticatedUser.getUsername());  // Assuming the username is the user's ID
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof User) {
+            User authenticatedUser = (User) principal;
+            return findUserIdByUsername(authenticatedUser.getUsername());
+        } else if (principal instanceof String) {
+            String username = (String) principal;
+            return findUserIdByUsername(username);
+        } else {
+            throw new IllegalStateException("User is not authenticated.");
+        }
+    }
+
+    private Long findUserIdByUsername(String username) {
+        AppUser user = userRepository.findByUsername(username);
+        return user != null ? user.getAppUserId() : null;  // Return null if user not found
     }
 
     // Validation method for task inputs
