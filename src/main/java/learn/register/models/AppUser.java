@@ -15,18 +15,28 @@ public class AppUser extends User {
 
     // Custom fields
     private Long appUserId;
+    private String email;
     private boolean disabled;
     private List<String> roles = new ArrayList<>();
 
     // Constructor
-    public AppUser(Long appUserId, String username, String password,
+    public AppUser(Long appUserId, String username, String password, String email,
                    boolean disabled, List<String> roles) {
         super(username, password, !disabled,
                 true, true, true,
                 convertRolesToAuthorities(roles));
         this.appUserId = appUserId;
+        this.email = email;
         this.disabled = disabled;
-        this.roles = roles;
+        this.roles = roles != null ? roles : new ArrayList<>();
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     // Getters and Setters for custom fields
