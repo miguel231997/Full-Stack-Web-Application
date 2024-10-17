@@ -18,7 +18,7 @@ const Signup = () => {
             credentials.code = adminCode;
         }
 
-        const response = await fetch('http://localhost:8080/api/user/register', {
+        const signupResponse = await fetch('http://localhost:8080/api/user/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -26,8 +26,27 @@ const Signup = () => {
             body: JSON.stringify(credentials),
         });
 
-        if (response.ok) {
-            navigate('/login'); // Redirect to login page upon successful signup
+        if (signupResponse.ok) {
+            // If signup is successful, log the user in automatically
+            const loginCredentials = { username, password };
+
+            const loginResponse = await fetch('http://localhost:8080/api/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginCredentials),
+            });
+
+            if (loginResponse.ok) {
+                const loginData = await loginResponse.json();
+                localStorage.setItem('token', loginData.jwt_token); // Store the JWT token
+
+                // Redirect to the tasks page after successful login
+                navigate('/tasks');
+            } else {
+                alert('Login failed after registration');
+            }
         } else {
             alert('Signup failed');
         }
