@@ -1,0 +1,84 @@
+### happy path / create a task
+
+POST http://localhost:8080/api/tasks
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "title": "Finish documentation",
+  "description": "Complete the documentation for the new feature",
+  "status": "Pending"
+}
+
+
+### create another task
+POST http://localhost:8080/api/tasks
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "title": "Finish HomeWork",
+  "description": "Complete coding homework on java",
+  "status": "Pending"
+}
+
+
+### unhappy path / create a task with missing values
+POST http://localhost:8080/api/tasks
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "title": "dfgdfg",
+  "description": "dfvdfg",
+  "status": ""
+}
+
+
+### happy path retrieve all task from user
+GET http://localhost:8080/api/tasks
+Authorization: Bearer 
+Content-Type: application/json
+
+
+### happy path / retrieve task by task id
+GET http://localhost:8080/api/tasks/6
+Authorization: Bearer 
+Content-Type: application/json
+
+
+### happy path / update a task
+PUT http://localhost:8080/api/tasks/6
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "title": "Finish documentation",
+  "description": "Complete the documentation for the new feature",
+  "status": "Completed"
+}
+
+
+###unhappy path /update a non existent task
+PUT http://localhost:8080/api/tasks/999
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "title": "Finish documentation",
+  "description": "Complete the documentation for the new feature",
+  "status": "Completed"
+}
+
+
+### happy path / delete a task
+
+DELETE http://localhost:8080/api/tasks/6
+Authorization: Bearer 
+Content-Type: application/json
+
+###unhappy path / delete not existent task
+
+DELETE http://localhost:8080/api/tasks/999
+Authorization: Bearer 
+Content-Type: application/json

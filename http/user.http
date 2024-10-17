@@ -1,0 +1,102 @@
+POST http://localhost:8080/api/user/register
+Content-Type: application/json
+
+{
+  "username": "miguel",
+  "email": "mig@mail.com",
+  "password": "loco0023!"
+
+}
+### unhappy path / duplicate user
+
+POST http://localhost:8080/api/user/register
+Content-Type: application/json
+
+{
+  "username": "miguel",
+  "email": "mig@mail.com",
+  "password": "loco0023!"
+}
+
+### unhappy path / missing fields
+
+POST http://localhost:8080/api/user/register
+Content-Type: application/json
+
+{
+  "username": "mig",
+  "email": "miguel@gmail.com",
+  "password": ""
+}
+
+### happy path / login in user
+
+POST http://localhost:8080/api/user/login
+Content-Type: application/json
+
+{
+    "username": "miguel",
+    "password": "loco0023!"
+}
+
+### unhappy path / wrong credentials
+
+POST http://localhost:8080/api/user/login
+Content-Type: application/json
+
+{
+    "username": "miguel",
+    "password": "loco0"
+}
+
+### unhappy path / missing fields
+
+POST http://localhost:8080/api/user/login
+Content-Type: application/json
+
+{
+    "username": "miguel",
+    "password": ""
+}
+
+###
+
+GET http://localhost:8080/api/tasks
+Authorization: Bearer 
+
+### happy path / create admin
+
+POST http://localhost:8080/api/user/register
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "email": "admin@mail.com",
+  "password": "AdminPassword123!",
+  "code": "ADMIN1234"
+}
+
+### admin log in happy / path
+
+POST http://localhost:8080/api/user/login
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "AdminPassword123!"
+}
+
+### happy path / delete users as admin
+
+DELETE http://localhost:8080/api/admin/delete/1
+Authorization: Bearer 
+
+### unhappy path / delete user that doesnt exist 
+
+DELETE http://localhost:8080/api/admin/delete/999
+Authorization: Bearer 
+
+### get all users admin
+
+GET http://localhost:8080/api/admin/users
+Authorization: Bearer 
