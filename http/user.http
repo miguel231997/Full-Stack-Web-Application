@@ -4,7 +4,7 @@ Content-Type: application/json
 {
   "username": "miguel",
   "email": "mig@mail.com",
-  "password": "loco0023!"
+  "password": <>
 
 }
 ### unhappy path / duplicate user
@@ -15,7 +15,7 @@ Content-Type: application/json
 {
   "username": "miguel",
   "email": "mig@mail.com",
-  "password": "loco0023!"
+  "password": <>
 }
 
 ### unhappy path / missing fields
@@ -36,7 +36,7 @@ Content-Type: application/json
 
 {
     "username": "miguel",
-    "password": "loco0023!"
+    "password": <>
 }
 
 ### unhappy path / wrong credentials
@@ -72,7 +72,7 @@ Content-Type: application/json
 {
   "username": "admin",
   "email": "admin@mail.com",
-  "password": "AdminPassword123!",
+  "password": <>,
   "code": "ADMIN1234"
 }
 
@@ -83,7 +83,7 @@ Content-Type: application/json
 
 {
     "username": "admin",
-    "password": "AdminPassword123!"
+    "password": <>
 }
 
 ### happy path / delete users as admin
