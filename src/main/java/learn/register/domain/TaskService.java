@@ -76,15 +76,15 @@ public class TaskService {
         return result;
     }
 
-    // Update an existing task (only if it belongs to the authenticated user)
     public Result<Task> updateTask(Long taskId, Task task) {
         Long userId = getAuthenticatedUserId();  // Get current user's ID
 
         Task existingTask = taskRepository.findByIdAndUserId(taskId, userId);  // Ensure task belongs to user
         Result<Task> result = validate(task);
+
         if (existingTask == null) {
             result.setType(ResultType.NOT_FOUND);
-            result.setMessage("Task not found.");
+            result.setMessage("Task with ID " + taskId + " not found for the current user.");
         } else {
             task.setTaskId(taskId);  // Set the correct task ID
             int updateResult = taskRepository.update(task);
@@ -100,7 +100,6 @@ public class TaskService {
         return result;
     }
 
-    // Delete a task (only if it belongs to the authenticated user)
     public Result<Void> deleteTaskById(Long taskId) {
         Long userId = getAuthenticatedUserId();  // Get current user's ID
         Task task = taskRepository.findByIdAndUserId(taskId, userId);  // Ensure task belongs to user
@@ -108,7 +107,7 @@ public class TaskService {
         Result<Void> result = new Result<>();
         if (task == null) {
             result.setType(ResultType.NOT_FOUND);
-            result.setMessage("Task not found.");
+            result.setMessage("Task with ID " + taskId + " not found for the current user.");
         } else {
             int deleteResult = taskRepository.deleteById(taskId);
 

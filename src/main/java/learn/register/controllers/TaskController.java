@@ -1,6 +1,7 @@
 package learn.register.controllers;
 
 import learn.register.domain.Result;
+import learn.register.domain.ResultType;
 import learn.register.models.Task;
 import learn.register.domain.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class TaskController {
     }
 
     // GET Task by ID (only the task owner can access)
-    @GetMapping("/{id}")
+    @GetMapping("/{taskId}")
     public ResponseEntity<?> findById(@PathVariable Long taskId) {
         Result<Task> result = taskService.findTaskById(taskId);
         if (result.isSuccess()) {
@@ -50,23 +51,31 @@ public class TaskController {
     }
 
     // PUT - Update an existing task (only task owner can update)
-    @PutMapping("/{id}")
+    @PutMapping("/{taskId}")
     public ResponseEntity<?> updateTask(@PathVariable Long taskId, @RequestBody Task task) {
         Result<Task> result = taskService.updateTask(taskId, task);
+
         if (result.isSuccess()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(result.getPayload(), HttpStatus.OK);  // Return updated task
+        } else if (result.getType() == ResultType.NOT_FOUND) {
+            return new ResponseEntity<>(result.getMessage(), HttpStatus.NOT_FOUND);  // Return 404 if task not found
         }
-        return new ResponseEntity<>(result.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return new ResponseEntity<>(result.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);  // Return 500 on any other error
     }
 
     // DELETE - Remove a task by its ID (only task owner can delete)
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{taskId}")
     public ResponseEntity<?> deleteById(@PathVariable Long taskId) {
         Result<Void> result = taskService.deleteTaskById(taskId);
+
         if (result.isSuccess()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);  // Return 204 on success with no content
+        } else if (result.getType() == ResultType.NOT_FOUND) {
+            return new ResponseEntity<>(result.getMessage(), HttpStatus.NOT_FOUND);  // Return 404 if task not found
         }
-        return new ResponseEntity<>(result.getMessage(), HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(result.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);  // Return 500 on any other error
     }
 
 }
