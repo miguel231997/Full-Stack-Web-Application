@@ -5,6 +5,7 @@ import Login from './components/Login/Login.Component';
 import Tasks from './components/Tasks/Tasks.Component';
 import './App.css';
 import Signup from './components/Signup/Signup.Component';
+import CreateTask from './components/CreateTask/CreateTask.Component';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -63,6 +64,7 @@ function App() {
         <Route path="/tasks" element={<PrivateRoute><Tasks /></PrivateRoute>} />
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/register" element={<Signup setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/create-task" element={<CreateTask />} />
       </Routes>
     </div>
   );
