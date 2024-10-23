@@ -10,8 +10,6 @@ const TaskDetail = () => {
     useEffect(() => {
         const fetchTask = async () => {
             const token = localStorage.getItem('token');
-            console.log(`Fetching task with ID: ${taskId}`); // Debug: log taskId
-
             try {
                 const response = await fetch(`http://localhost:8080/api/tasks/${taskId}`, {
                     headers: {
@@ -19,26 +17,21 @@ const TaskDetail = () => {
                     },
                 });
 
-                console.log('Response status:', response.status); // Debug: log response status
-
                 if (!response.ok) {
                     setError('Failed to fetch task');
                     return;
                 }
 
                 const contentType = response.headers.get("content-type");
-                console.log('Content-Type:', contentType); // Debug: log content type
 
                 if (contentType && contentType.includes("application/json")) {
                     const data = await response.json();
-                    console.log('Task data:', data); // Debug: log data received
                     setTask(data);  // Update to set the whole object
                 } else {
                     setError('No task found or invalid response format.');
                 }
             } catch (err) {
                 setError('An error occurred while fetching the task.');
-                console.error(err);
             }
         };
 
@@ -62,7 +55,6 @@ const TaskDetail = () => {
             }
         } catch (err) {
             setError('An error occurred while deleting the task.');
-            console.error(err);
         }
     };
 
