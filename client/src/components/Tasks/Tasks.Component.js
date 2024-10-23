@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Tasks = () => {
     const [tasks, setTasks] = useState([]);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -27,10 +29,15 @@ const Tasks = () => {
     
         fetchTasks();
       }, []);
+
+      const handleAddTask = () => {
+        navigate('/create-task')
+      }
       return (
         <div>
           <h1>Tasks Page</h1>
           {error && <p style={{ color: "red" }}>{error}</p>} {/* Display any errors */}
+          <button onClick={handleAddTask}>Add Task</button>
           {tasks.length > 0 ? (
             <ul>
               {tasks.map((task) => (
