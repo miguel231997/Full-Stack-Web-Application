@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Tasks = () => {
     const [tasks, setTasks] = useState([]);
@@ -42,7 +42,7 @@ const Tasks = () => {
             <ul>
               {tasks.map((task) => (
                 <li key={task.taskId}>
-                  {task.title} - {task.status} {/* Correct status rendering */}
+                <Link to={`/tasks/${task.taskId}`}>{task.title}</Link> - {task.status}
                 </li>
               ))}
             </ul>
