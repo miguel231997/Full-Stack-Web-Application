@@ -119,9 +119,6 @@ public class UserJdbcTemplateRepository implements UserRepository {
         for (AppUser user : users) {
             List<String> roles = getRolesByUsername(user.getUsername());
             user.setRoles(roles);
-
-            // Logging the user and their roles for debugging
-            System.out.println("User: " + user.getUsername() + ", Roles: " + roles);
         }
 
         return users;
