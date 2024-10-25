@@ -24,7 +24,15 @@ public class AppUserService implements UserDetailsService {
     }
 
     public List<AppUser> getAllUsers() {
-        return repository.findAll();
+        List<AppUser> users = repository.findAll();
+
+        // Ensure roles are included in the response
+        for (AppUser user : users) {
+            List<String> roles = repository.getRolesByUsername(user.getUsername());
+            user.setRoles(roles);
+        }
+
+        return users;
     }
 
     @Transactional  // Ensures that the delete operation is handled as a single transaction

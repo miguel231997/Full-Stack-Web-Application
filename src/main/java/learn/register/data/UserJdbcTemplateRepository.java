@@ -113,7 +113,18 @@ public class UserJdbcTemplateRepository implements UserRepository {
     @Override
     public List<AppUser> findAll() {
         final String sql = "SELECT id, username, password, email, enabled FROM users";
-        return jdbcTemplate.query(sql, new UserMapper(null));
+        List<AppUser> users = jdbcTemplate.query(sql, new UserMapper(null));
+
+        // Fetch roles for each user and set them
+        for (AppUser user : users) {
+            List<String> roles = getRolesByUsername(user.getUsername());
+            user.setRoles(roles);
+
+            // Logging the user and their roles for debugging
+            System.out.println("User: " + user.getUsername() + ", Roles: " + roles);
+        }
+
+        return users;
     }
 
     @Override
