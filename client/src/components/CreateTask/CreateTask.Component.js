@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
 const CreateTask = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -42,7 +43,6 @@ const CreateTask = () => {
                         setErrors({ general: 'Failed to create task' });
                     }
                 } else {
-                    // If the response is not JSON, set a generic error
                     const textError = await response.text();
                     setErrors({ general: textError });
                 }
@@ -53,42 +53,57 @@ const CreateTask = () => {
         }
     };
 
-    return(
-        <div>
-            <h1> Create a task</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label> Title </label>
+    return (
+        <div className="container mt-5">
+            <h1 className="text-center mb-4">Create a Task</h1>
+            <form onSubmit={handleSubmit} className="w-50 mx-auto">
+                <div className="form-group mb-3">
+                    <label htmlFor="taskTitle">Title</label>
                     <input
                         type="text"
+                        id="taskTitle"
+                        className="form-control"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
+                        required
                     />
-                    {errors && errors.title && <p style={{ color: 'red'}}>{errors.title} </p>}
+                    {errors && errors.title && <p className="text-danger">{errors.title}</p>}
                 </div>
-                <div>
-                    <label> Description </label>
-                    <textarea 
+
+                <div className="form-group mb-3">
+                    <label htmlFor="taskDescription">Description</label>
+                    <textarea
+                        id="taskDescription"
+                        className="form-control"
+                        rows="4"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
+                        required
                     />
-                    {errors && errors.setDescription && <p style={{color : 'red'}}> {errors.title} </p>}
+                    {errors && errors.description && <p className="text-danger">{errors.description}</p>}
                 </div>
-                <div>
-                    <label> Status </label>
-                    <select value={status} onChange={(e) => setStatus(e.target.value)}>
-                        <option value="Pending"> Pending </option>
-                        <option value="In Progress"> In Progress</option>
-                        <option value="Completed"> Completed </option>
+
+                <div className="form-group mb-3">
+                    <label htmlFor="taskStatus">Status</label>
+                    <select
+                        id="taskStatus"
+                        className="form-select"
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                        required
+                    >
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
                     </select>
                 </div>
-                <button type="submit"> Create Task </button>
+
+                <button type="submit" className="btn btn-primary w-100">Create Task</button>
             </form>
-            {errors && errors.general && <p style={{ color: 'red' }}> {errors.general} </p>}
+
+            {errors && errors.general && <p className="text-danger text-center mt-3">{errors.general}</p>}
         </div>
-    )
-
+    );
 };
-
 
 export default CreateTask;

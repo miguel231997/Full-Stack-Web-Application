@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = ({ setIsLoggedIn, setIsAdmin }) => {
     const [username, setUsername] = useState('');
@@ -20,45 +20,42 @@ const Login = ({ setIsLoggedIn, setIsAdmin }) => {
 
         if (response.ok) {
             const data = await response.json();
-            localStorage.setItem('token', data.jwt_token);  // Save the JWT token to localStorage
-
-            // Decode the token to determine the user's role
+            localStorage.setItem('token', data.jwt_token);
+            setIsLoggedIn(true);
             const decodedToken = JSON.parse(atob(data.jwt_token.split('.')[1]));
             const roles = decodedToken.authorities || [];
-
-            // Update the states
-            setIsLoggedIn(true);  // User is logged in
-            setIsAdmin(roles.includes('ROLE_ADMIN'));  // Check if the user is an admin
-
-            navigate('/tasks');  // Redirect to tasks page
+            setIsAdmin(roles.includes('ROLE_ADMIN'));
+            navigate('/tasks');
         } else {
             alert('Login failed');
         }
     };
 
     return (
-        <div>
-            <h1>Login Page</h1>
+        <div className="container">
+            <h1 className="my-4">Login</h1>
             <form onSubmit={handleSubmit}>
-                <div>
+                <div className="form-group">
                     <label>Username</label>
                     <input
                         type="text"
+                        className="form-control"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <label>Password</label>
                     <input
                         type="password"
+                        className="form-control"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </div>
-                <button type="submit">Login</button>
+                <button type="submit" className="btn btn-primary">Login</button>
             </form>
         </div>
     );

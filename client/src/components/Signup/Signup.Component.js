@@ -47,58 +47,61 @@ const Signup = ({ setIsLoggedIn, setIsAdmin }) => {
     };
 
     return (
-        <div>
-            <h1>Signup Page</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
+        <div className="container mt-5">
+            <h1 className="text-center mb-4">Signup Page</h1>
+            <form onSubmit={handleSubmit} className="w-50 mx-auto">
+                <div className="form-group">
                     <label>Username</label>
                     <input
                         type="text"
+                        className="form-control"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <label>Password</label>
                     <input
                         type="password"
+                        className="form-control"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <label>Email</label>
                     <input
                         type="email"
+                        className="form-control"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </div>
-                <div>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={isAdmin}
-                            onChange={() => setSignupAdmin(!isAdmin)}
-                        />
-                        Register as Admin
-                    </label>
+                <div className="form-check mb-3">
+                    <input
+                        type="checkbox"
+                        className="form-check-input"
+                        checked={isAdmin}
+                        onChange={() => setSignupAdmin(!isAdmin)}
+                    />
+                    <label className="form-check-label">Register as Admin</label>
                 </div>
                 {isAdmin && (
-                    <div>
+                    <div className="form-group">
                         <label>Admin Code</label>
                         <input
                             type="text"
+                            className="form-control"
                             value={adminCode}
                             onChange={(e) => setAdminCode(e.target.value)}
                             required={isAdmin}
                         />
                     </div>
                 )}
-                <button type="submit">Sign Up</button>
+                <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
             </form>
         </div>
     );

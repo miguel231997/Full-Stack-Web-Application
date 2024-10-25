@@ -21,12 +21,10 @@ const EditTask = () => {
                     },
                 });
 
-
                 if (response.ok) {
                     const contentType = response.headers.get("content-type");
                     if (contentType && contentType.includes("application/json")) {
                         const data = await response.json();
-                        // Directly access the task object since there's no payload wrapper
                         setTask(data);
                         setTitle(data.title);
                         setDescription(data.description);
@@ -70,41 +68,56 @@ const EditTask = () => {
         }
     };
 
-    if (error) return <p>{error}</p>;
+    if (error) return <p className="text-danger">{error}</p>;
     if (!task) return <p>Loading task details...</p>;
 
     return (
-        <div>
-            <h1>Edit Task</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Title</label>
+        <div className="container mt-5">
+            <h1 className="text-center mb-4">Edit Task</h1>
+            <form onSubmit={handleSubmit} className="w-50 mx-auto">
+                <div className="form-group mb-3">
+                    <label htmlFor="taskTitle">Title</label>
                     <input
                         type="text"
+                        id="taskTitle"
+                        className="form-control"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         required
                     />
                 </div>
-                <div>
-                    <label>Description</label>
+
+                <div className="form-group mb-3">
+                    <label htmlFor="taskDescription">Description</label>
                     <textarea
+                        id="taskDescription"
+                        className="form-control"
+                        rows="4"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         required
                     />
                 </div>
-                <div>
-                    <label>Status</label>
-                    <input
-                        type="text"
+
+                <div className="form-group mb-3">
+                    <label htmlFor="taskStatus">Status</label>
+                    <select
+                        id="taskStatus"
+                        className="form-select"
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
                         required
-                    />
+                    >
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
                 </div>
-                <button type="submit">Update Task</button>
+
+                <button type="submit" className="btn btn-primary w-100">Update Task</button>
             </form>
+
+            {error && <p className="text-danger text-center mt-3">{error}</p>}
         </div>
     );
 };

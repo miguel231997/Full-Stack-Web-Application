@@ -62,16 +62,20 @@ const TaskDetail = () => {
         navigate(`/tasks/edit/${taskId}`); // Redirect to edit page
     };
 
-    if (error) return <p>{error}</p>;
+    if (error) return <p className="text-danger">{error}</p>;
     if (!task) return <p>Loading task...</p>;
 
     return (
-        <div>
-            <h1>{task.title}</h1>
-            <p>Status: {task.status}</p>
-            <p>Description: {task.description}</p>
-            <button onClick={handleEdit}>Edit</button>
-            <button onClick={handleDelete}>Delete</button>
+        <div className="container mt-5">
+            <div className="card shadow p-4">
+                <h1 className="card-title">{task.title}</h1>
+                <p className="card-text"><strong>Status:</strong> {task.status}</p>
+                <p className="card-text"><strong>Description:</strong> {task.description}</p>
+                <div className="d-flex justify-content-between">
+                    <button className="btn btn-warning" onClick={handleEdit}>Edit</button>
+                    <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
+                </div>
+            </div>
         </div>
     );
 };

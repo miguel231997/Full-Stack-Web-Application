@@ -44,27 +44,41 @@ const UserAdmin = () => {
         }
     };
 
-    if (error) return <p>{error}</p>;
+    if (error) return <div className="alert alert-danger">{error}</div>;
 
     if (users.length === 0) return <p>No users found</p>;
 
     return (
-        <div>
-            <h1>Manage Users</h1>
-            <ul>
-    {users.map(user => {
-        
-        return (
-            <li key={user.appUserId}>
-                {user.username} - {user.email}
-                {/* Conditionally render delete button if the user does not have ROLE_ADMIN */}
-                {user.roles && !user.roles.includes('ADMIN') && (
-                    <button onClick={() => handleDelete(user.appUserId)}>Delete</button>
-                )}
-            </li>
-        );
-    })}
-</ul>
+        <div className="container mt-5">
+            <h1 className="mb-4 text-center">Manage Users</h1>
+            <table className="table table-bordered table-hover">
+                <thead className="thead-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {users.map(user => (
+                        <tr key={user.appUserId}>
+                            <td>{user.username}</td>
+                            <td>{user.email}</td>
+                            <td>
+                                {/* Conditionally render delete button if the user does not have ROLE_ADMIN */}
+                                {user.roles && !user.roles.includes('ADMIN') && (
+                                    <button 
+                                        className="btn btn-danger btn-sm"
+                                        onClick={() => handleDelete(user.appUserId)}
+                                    >
+                                        Delete
+                                    </button>
+                                )}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 };
