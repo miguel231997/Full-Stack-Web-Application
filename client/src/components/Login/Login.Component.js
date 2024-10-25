@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Login = ({ setIsLoggedIn }) => {
+const Login = ({ setIsLoggedIn, setIsAdmin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -21,7 +21,15 @@ const Login = ({ setIsLoggedIn }) => {
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem('token', data.jwt_token);  // Save the JWT token to localStorage
-            setIsLoggedIn(true);  // Update login state in App.js
+
+            // Decode the token to determine the user's role
+            const decodedToken = JSON.parse(atob(data.jwt_token.split('.')[1]));
+            const roles = decodedToken.authorities || [];
+
+            // Update the states
+            setIsLoggedIn(true);  // User is logged in
+            setIsAdmin(roles.includes('ROLE_ADMIN'));  // Check if the user is an admin
+
             navigate('/tasks');  // Redirect to tasks page
         } else {
             alert('Login failed');

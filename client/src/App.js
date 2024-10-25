@@ -8,21 +8,34 @@ import Signup from './components/Signup/Signup.Component';
 import CreateTask from './components/CreateTask/CreateTask.Component';
 import TaskDetail from './components/TaskDetail/TaskDetail.Component'; // Import Task Detail
 import EditTask from './components/EditTask/EditTask.Component'; // Import Edit Task
+import UserAdmin from './components/UserAdmin/UserAdmin.Component'; // Admin component
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   // Check if a token exists in localStorage to determine if the user is logged in
   useEffect(() => {
     const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token); // If token exists, set isLoggedIn to true
+    if (token) {
+      setIsLoggedIn(true);  // User is logged in
+
+      // Decode the token to check if the user is an admin
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      const roles = decodedToken.authorities || [];
+      setIsAdmin(roles.includes('ROLE_ADMIN'));  // Check if the user has admin role
+    } else {
+      setIsLoggedIn(false);
+      setIsAdmin(false);
+    }
   }, []);
 
   // Logout function to clear the token and redirect
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
+    setIsAdmin(false);
     navigate('/'); // Redirect to home after logout
   };
 
@@ -42,6 +55,11 @@ function App() {
           <li>
             <Link to="/tasks">Tasks</Link>
           </li>
+          { isAdmin && (
+            <li>
+              <Link to="/admin/users">Manage Users</Link>
+            </li>
+          )}
           {isLoggedIn ? (
             <>
               <li>
@@ -64,11 +82,12 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/tasks" element={<PrivateRoute><Tasks /></PrivateRoute>} />
-        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} />} />
         <Route path="/register" element={<Signup setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/create-task" element={<CreateTask />} />
+        <Route path="/create-task" element={<PrivateRoute><CreateTask /></PrivateRoute>} />
         <Route path="/tasks/:taskId" element={<PrivateRoute><TaskDetail /></PrivateRoute>} />
         <Route path="/tasks/edit/:taskId" element={<PrivateRoute><EditTask /></PrivateRoute>} />
+        <Route path="/admin/users" element={isAdmin ? <UserAdmin /> : <Navigate to="/" />} />
       </Routes>
     </div>
   );
