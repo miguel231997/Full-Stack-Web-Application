@@ -66,10 +66,16 @@ public class AppUserService implements UserDetailsService {
     public AppUser create(String username, String password, String email, String role) {
         validateUsername(username);
         validatePassword(password);
+        validateEmail(email);  // New method for email validation
 
-        System.out.println(role);
+        // Check if the username already exists
         if (repository.findByUsername(username) != null) {
-            throw new ValidationException("User already exists");
+            throw new ValidationException("Username already exists.");
+        }
+
+        // Check if the email already exists
+        if (repository.findByEmail(email) != null) {  // Assuming this method exists in your repository
+            throw new ValidationException("Email already exists.");
         }
 
         String encodedPassword = encoder.encode(password);
@@ -104,6 +110,12 @@ public class AppUserService implements UserDetailsService {
 
         if (digits == 0 || letters == 0 || others == 0) {
             throw new ValidationException("password must contain a digit, a letter, and a non-digit/non-letter");
+        }
+    }
+
+    private void validateEmail(String email) {
+        if (email == null || !email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            throw new ValidationException("Email is invalid.");
         }
     }
 

@@ -138,4 +138,13 @@ public class UserJdbcTemplateRepository implements UserRepository {
         final String sql = "DELETE FROM users WHERE id = ?";
         return jdbcTemplate.update(sql, AppUserId);
     }
+
+    @Override
+    public AppUser findByEmail(String email) {
+        final String sql = "SELECT id, username, password, email, enabled FROM users WHERE email = ?";
+        return jdbcTemplate.query(sql, new UserMapper(null), email)
+                .stream()
+                .findFirst()
+                .orElse(null);
+    }
 }

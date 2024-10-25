@@ -28,4 +28,6 @@ public interface UserRepository {
     AppUser findById(Long AppUserId);
 
     int deleteById(Long studentId);
+
+    AppUser findByEmail(String email);
 }
