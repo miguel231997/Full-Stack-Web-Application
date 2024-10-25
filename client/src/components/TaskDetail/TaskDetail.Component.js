@@ -39,6 +39,10 @@ const TaskDetail = () => {
     }, [taskId]);
 
     const handleDelete = async () => {
+        if (!window.confirm('Are you sure you want to delete this task?')) {
+            return; // If the user cancels, exit the function
+        }
+
         const token = localStorage.getItem('token');
         try {
             const response = await fetch(`http://localhost:8080/api/tasks/${taskId}`, {
