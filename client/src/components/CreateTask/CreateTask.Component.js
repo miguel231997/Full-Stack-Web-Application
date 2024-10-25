@@ -10,15 +10,15 @@ const CreateTask = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         const task = { title, description, status };
         const token = localStorage.getItem('token');
-
-        if(!token) {
+    
+        if (!token) {
             setErrors('You must be logged in to create a task');
             return;
         }
-
+    
         try {
             const response = await fetch('http://localhost:8080/api/tasks', {
                 method: 'POST',
@@ -28,15 +28,23 @@ const CreateTask = () => {
                 },
                 body: JSON.stringify(task)
             });
-
+    
             if (response.ok) {
                 navigate('/tasks'); // Redirect to tasks page on success
             } else {
-                const errorData = await response.json();
-                if (errorData.errors) {
-                    setErrors(errorData.errors); // Set validation errors
+                const contentType = response.headers.get("content-type");
+    
+                if (contentType && contentType.includes("application/json")) {
+                    const errorData = await response.json();
+                    if (errorData.message) {
+                        setErrors({ general: errorData.message });
+                    } else {
+                        setErrors({ general: 'Failed to create task' });
+                    }
                 } else {
-                    setErrors({ general: 'Failed to create task' });
+                    // If the response is not JSON, set a generic error
+                    const textError = await response.text();
+                    setErrors({ general: textError });
                 }
             }
         } catch (error) {
