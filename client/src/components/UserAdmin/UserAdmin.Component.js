@@ -53,11 +53,10 @@ const UserAdmin = () => {
             <h1>Manage Users</h1>
             <ul>
     {users.map(user => {
-        console.log("User:", user.username, "Roles:", user.roles); // Log user and roles here
-
+        
         return (
             <li key={user.appUserId}>
-                {user.username} - {user.email} - {user.taskCount} tasks
+                {user.username} - {user.email}
                 {/* Conditionally render delete button if the user does not have ROLE_ADMIN */}
                 {user.roles && !user.roles.includes('ADMIN') && (
                     <button onClick={() => handleDelete(user.appUserId)}>Delete</button>

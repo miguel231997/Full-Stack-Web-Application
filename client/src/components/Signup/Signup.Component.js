@@ -1,24 +1,24 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Signup = () => {
+const Signup = ({ setIsLoggedIn, setIsAdmin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
-    const [isAdmin, setIsAdmin] = useState(false); // State for role selection
-    const [adminCode, setAdminCode] = useState(''); // State for admin code
+    const [isAdmin, setSignupAdmin] = useState(false); // Whether the user is signing up as admin
+    const [adminCode, setAdminCode] = useState('');    // Admin code
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const credentials = { username, password, email };
 
-        // Add adminCode to the request body only if admin is selected
+        // If user tries to sign up as admin, add the admin code
         if (isAdmin) {
             credentials.code = adminCode;
         }
 
-        const signupResponse = await fetch('http://localhost:8080/api/user/register', {
+        const response = await fetch('http://localhost:8080/api/user/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -26,27 +26,21 @@ const Signup = () => {
             body: JSON.stringify(credentials),
         });
 
-        if (signupResponse.ok) {
-            // If signup is successful, log the user in automatically
-            const loginCredentials = { username, password };
+        if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem('token', data.jwt_token);  // Store the JWT token in localStorage
 
-            const loginResponse = await fetch('http://localhost:8080/api/user/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(loginCredentials),
-            });
+            // Set the user as logged in
+            setIsLoggedIn(true);
 
-            if (loginResponse.ok) {
-                const loginData = await loginResponse.json();
-                localStorage.setItem('token', loginData.jwt_token); // Store the JWT token
+            // Decode the token to check for the admin role
+            const decodedToken = JSON.parse(atob(data.jwt_token.split('.')[1]));
+            const roles = decodedToken.authorities || [];
 
-                // Redirect to the tasks page after successful login
-                navigate('/tasks');
-            } else {
-                alert('Login failed after registration');
-            }
+            // Check if the user is an admin and update state
+            setIsAdmin(roles.includes('ROLE_ADMIN'));
+
+            navigate('/tasks');  // Redirect to tasks page
         } else {
             alert('Signup failed');
         }
@@ -86,21 +80,9 @@ const Signup = () => {
                 <div>
                     <label>
                         <input
-                            type="radio"
-                            name="role"
-                            value="user"
-                            checked={!isAdmin}
-                            onChange={() => setIsAdmin(false)}
-                        />
-                        Register as User
-                    </label>
-                    <label>
-                        <input
-                            type="radio"
-                            name="role"
-                            value="admin"
+                            type="checkbox"
                             checked={isAdmin}
-                            onChange={() => setIsAdmin(true)}
+                            onChange={() => setSignupAdmin(!isAdmin)}
                         />
                         Register as Admin
                     </label>
@@ -112,12 +94,10 @@ const Signup = () => {
                             type="text"
                             value={adminCode}
                             onChange={(e) => setAdminCode(e.target.value)}
-                            placeholder="Enter admin code"
                             required={isAdmin}
                         />
                     </div>
                 )}
-
                 <button type="submit">Sign Up</button>
             </form>
         </div>

@@ -83,7 +83,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/tasks" element={<PrivateRoute><Tasks /></PrivateRoute>} />
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} />} />
-        <Route path="/register" element={<Signup setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/register" element={<Signup setIsLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} />} />
         <Route path="/create-task" element={<PrivateRoute><CreateTask /></PrivateRoute>} />
         <Route path="/tasks/:taskId" element={<PrivateRoute><TaskDetail /></PrivateRoute>} />
         <Route path="/tasks/edit/:taskId" element={<PrivateRoute><EditTask /></PrivateRoute>} />
